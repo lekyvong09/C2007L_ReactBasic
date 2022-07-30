@@ -1,3 +1,4 @@
+import Card from './Card';
 import './Expense.css';
 import ExpenseItem from './ExpenseItem';
 
@@ -8,12 +9,14 @@ function Expense(props) {
     //     expenseList.push(<ExpenseItem key={item.id} title={item.title} amount={item.amount} date={item.date}></ExpenseItem>)
     // });
 
-    var expenseList = props.expenses.map(item => <ExpenseItem key={item.id} title={item.title} amount={item.amount} date={item.date}></ExpenseItem>);
+    // var expenseList = props.expenses.map(item => <ExpenseItem key={item.id} title={item.title} amount={item.amount} date={item.date}></ExpenseItem>);
 
     return (
-        <div className='expenses'>
-            {expenseList}
-        </div>
+        <Card className='expenses'>
+            {props.expenses.map(item => 
+                <ExpenseItem key={item.id} title={item.title} amount={item.amount} date={item.date}></ExpenseItem>
+            )}
+        </Card>
     );
 }
 
