@@ -5,7 +5,7 @@ import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { useState } from "react";
 
-function ExpenseForm() {
+function ExpenseForm(props) {
     const [inputDate, setInputDate] = useState(new Date());
     const [title, setTitle] = useState('');
     const [amount, setAmount] = useState('');
@@ -19,10 +19,23 @@ function ExpenseForm() {
     const dateChangeHandler = (date) => {
         setInputDate(date);
     }
+    const submitHandler = (event) => {
+        event.preventDefault();
+        var expenseData = {
+            title: title,
+            amount: amount,
+            date: inputDate
+        };
+        props.onSaveExpense(expenseData);
+
+        setTitle('');
+        setAmount('');
+        setInputDate(new Date());
+    }
 
     return (
         <Container sx={{width: '50%'}}>
-            <form>
+            <form onSubmit={submitHandler}>
                 <Stack spacing={2} pt={5} margin="dense">
                     <TextField 
                         id="expense-form-title" 

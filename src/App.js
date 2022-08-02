@@ -13,9 +13,17 @@ function App() {
     {id: 4, title: 'Dinner', amount: 20, date: new Date(2022,7,20)}
   ];
 
+  const saveExpenseHandler = (inputExpense) => {
+    const expenseData = {
+      ...inputExpense,
+      id: Math.random()
+    };
+    console.log(expenseData);
+  }
+
   return (
     <div>
-      <NewExpense />
+      <NewExpense onSaveExpenseHandler={saveExpenseHandler}/>
       <Expense expenses={expenses}></Expense>
     </div>
   );
