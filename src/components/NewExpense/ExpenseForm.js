@@ -6,18 +6,30 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { useState } from "react";
 
 function ExpenseForm() {
-    const [inputDate, setInputDate] = useState(new Date());
-    const [title, setTitle] = useState('');
-    const [amount, setAmount] = useState('');
+    // const [inputDate, setInputDate] = useState(new Date());
+    // const [title, setTitle] = useState('');
+    // const [amount, setAmount] = useState('');
+
+    const [userInput, setUserInput] = useState({
+        title: '',
+        amount: '',
+        inputDate: new Date()
+    });
 
     const titleChangeHandler = (event) => {
-        setTitle(event.target.value);
+        setUserInput((previousState) => {
+            return {...previousState, title: event.target.value}
+        });
     }
     const amountChangeHandler = (event) => {
-        setAmount(event.target.value);
+        setUserInput((previousState) => {
+            return {...previousState, amount: event.target.value}
+        });
     }
     const dateChangeHandler = (date) => {
-        setInputDate(date);
+        setUserInput((previousState) => {
+            return {...previousState, inputDate: date}
+        });
     }
 
     return (
@@ -29,7 +41,7 @@ function ExpenseForm() {
                         label="Title" 
                         variant="outlined" 
                         onChange={titleChangeHandler}
-                        value={title}
+                        value={userInput.title}
                     />
                     <TextField 
                         id="expense-form-amount" 
@@ -38,12 +50,12 @@ function ExpenseForm() {
                         type="number"
                         inputProps={{min: "0.01", step: "0.01"}}
                         onChange={amountChangeHandler}
-                        value={amount}
+                        value={userInput.amount}
                     />
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DesktopDatePicker
                             label="Date"
-                            value={inputDate}
+                            value={userInput.inputDate}
                             minDate={new Date('2022-01-01')}
                             maxDate={new Date('2023-12-31')}
                             onChange={dateChangeHandler}
