@@ -25,10 +25,10 @@ function App() {
   }
 
   return (
-    <div>
+    <>
       <NewExpense onSaveExpenseHandler={saveExpenseHandler}/>
       <Expense expenses={expenses}></Expense>
-    </div>
+    </>
   );
 }
 

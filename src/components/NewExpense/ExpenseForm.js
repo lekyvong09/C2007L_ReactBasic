@@ -80,6 +80,7 @@ function ExpenseForm(props) {
                             renderInput={(params) => (<TextField 
                                                         {...params} 
                                                         error={!isValidDate}
+                                                        helperText={`Please input a ${!isValidDate ? 'valid': ''} date`}
                                                     />)}
                         />
                     </LocalizationProvider>
