@@ -1,20 +1,21 @@
 
+import { useState } from 'react';
 import Card from '../UI/Card';
 import './Expense.css';
+import ExpenseFilter from './ExpenseFilter';
 import ExpenseItem from './ExpenseItem';
 
 function Expense(props) {
-    // var expenseList =[];
+    const [filterYear, setFilterYear] = useState(2022);
 
-    // props.expenses.forEach(item => {
-    //     expenseList.push(<ExpenseItem key={item.id} title={item.title} amount={item.amount} date={item.date}></ExpenseItem>)
-    // });
-
-    // var expenseList = props.expenses.map(item => <ExpenseItem key={item.id} title={item.title} amount={item.amount} date={item.date}></ExpenseItem>);
+    const getYearFilter = (year) => {
+        setFilterYear(year);
+    }
 
     return (
         <Card className='expenses'>
-            {props.expenses.map(item => 
+            <ExpenseFilter onGetYearFilter={getYearFilter}></ExpenseFilter>
+            {props.expenses.filter(i => i.date.getFullYear() === filterYear).map(item => 
                 <ExpenseItem key={item.id} title={item.title} amount={item.amount} date={item.date}></ExpenseItem>
             )}
         </Card>
