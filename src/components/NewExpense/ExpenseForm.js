@@ -9,7 +9,9 @@ function ExpenseForm(props) {
     const [inputDate, setInputDate] = useState(new Date());
     const [title, setTitle] = useState('');
     const [amount, setAmount] = useState('');
-
+    const [isValidTitle, setIsValidTitle] = useState(true);
+    const [isValidAmount, setIsValidAmount] = useState(true);
+    const [isValidDate, setIsValidDate] = useState(true);
     const titleChangeHandler = (event) => {
         setTitle(event.target.value);
     }
@@ -21,6 +23,19 @@ function ExpenseForm(props) {
     }
     const submitHandler = (event) => {
         event.preventDefault();
+
+        if (title.trim().length === 0) {
+            setIsValidTitle(false);
+            return;
+        }
+        if (amount.trim().length === 0) {
+            setIsValidAmount(false);
+            return;
+        }
+        if (!(inputDate instanceof Date && !isNaN(inputDate))) {
+            setIsValidDate(false);
+            return;
+        }
         var expenseData = {
             title: title,
             amount: amount,
@@ -37,7 +52,8 @@ function ExpenseForm(props) {
         <Container sx={{width: '50%'}}>
             <form onSubmit={submitHandler}>
                 <Stack spacing={2} pt={5} margin="dense">
-                    <TextField 
+                    <TextField
+                        error={!isValidTitle}
                         id="expense-form-title" 
                         label="Title" 
                         variant="outlined" 
@@ -45,6 +61,7 @@ function ExpenseForm(props) {
                         value={title}
                     />
                     <TextField 
+                        error= {!isValidAmount}
                         id="expense-form-amount" 
                         label="Amount" 
                         variant="outlined"
@@ -60,7 +77,10 @@ function ExpenseForm(props) {
                             minDate={new Date('2022-01-01')}
                             maxDate={new Date('2023-12-31')}
                             onChange={dateChangeHandler}
-                            renderInput={(params) => <TextField {...params} />}
+                            renderInput={(params) => (<TextField 
+                                                        {...params} 
+                                                        error={!isValidDate}
+                                                    />)}
                         />
                     </LocalizationProvider>
                 </Stack>
