@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './App.css';
 import Expense from './components/Expense/Expense';
+import Navigation from './components/Navigation/Navigation';
 import NewExpense from './components/NewExpense/NewExpense';
 
 var initialExpenses = [
@@ -25,10 +26,10 @@ function App() {
   }
 
   return (
-    <>
+    <Navigation>
       <NewExpense onSaveExpenseHandler={saveExpenseHandler}/>
       <Expense expenses={expenses}></Expense>
-    </>
+    </Navigation>
   );
 }
 
