@@ -1,5 +1,9 @@
 import { Box, Button, Container, Stack, TextField } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useReducer, useState } from "react";
+
+const usernameReducer = (state , action) => {
+    return { value: '', isValid: false};
+}
 
 function Login (props) {
     const [username, setUsername] = useState('');
@@ -9,22 +13,24 @@ function Login (props) {
     const [isValidPassword, setIsValidPassword] = useState(true);
     const [formIsValid, setFormIsValid] = useState(false);
 
-    useEffect(() => {
-        console.log('useEffect validate form');
-        setFormIsValid(password.trim().length !== 0 && username.trim().length !== 0);
+    const [usernameState, usernameDispatcher] = useReducer(usernameReducer, {value: '', isValid: false});
 
-        return (() => {
-            console.log('clean up useEffect');
-        });
-    }, [password, username]);
+    // useEffect(() => {
+    //     console.log('useEffect validate form');
+    //     setFormIsValid(password.trim().length !== 0 && username.trim().length !== 0);
+
+    //     return (() => {
+    //         console.log('clean up useEffect');
+    //     });
+    // }, [password, username]);
 
     const usernameChangeHandler = (event) => {
         setUsername(event.target.value);
-        // setFormIsValid(event.target.value.trim().length !== 0 && password.trim().length !== 0);
+        setFormIsValid(event.target.value.trim().length !== 0 && password.trim().length !== 0);
     }
     const passwordChangeHandler = (event) => {
         setPassword(event.target.value);
-        // setFormIsValid(event.target.value.trim().length !== 0 && username.trim().length !== 0);
+        setFormIsValid(event.target.value.trim().length !== 0 && username.trim().length !== 0);
     }
     const validateUsernameHandler = () => {
         setIsValidUsername(username.trim().length !== 0);
