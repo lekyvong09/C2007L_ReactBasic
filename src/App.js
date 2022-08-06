@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './App.css';
 import Expense from './components/Expense/Expense';
+import Login from './components/Login/Login';
 import Navigation from './components/Navigation/Navigation';
 import NewExpense from './components/NewExpense/NewExpense';
 
@@ -14,6 +15,16 @@ var initialExpenses = [
 
 function App() {
   const [expenses, setExpense] = useState(initialExpenses);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const loginHandler = (username, password) => {
+    console.log(`login with username: ${username} and password: ${password}`);
+    setIsLoggedIn(true);
+  }
+
+  const logoutHandler = () => {
+    setIsLoggedIn(false);
+  }
 
   const saveExpenseHandler = (inputExpense) => {
     const expenseData = {
@@ -26,10 +37,15 @@ function App() {
   }
 
   return (
-    <Navigation>
-      <NewExpense onSaveExpenseHandler={saveExpenseHandler}/>
-      <Expense expenses={expenses}></Expense>
-    </Navigation>
+    <>
+      {isLoggedIn && <Navigation isLoggedIn={isLoggedIn} onLogin={loginHandler} onLogout={logoutHandler}>
+          <NewExpense onSaveExpenseHandler={saveExpenseHandler}/>
+          <Expense expenses={expenses}></Expense>
+      </Navigation>}
+
+      {!isLoggedIn && <Login onLogin={loginHandler}/>}
+    </>
+    
   );
 }
 
