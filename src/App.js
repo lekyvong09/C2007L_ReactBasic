@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import Expense from './components/Expense/Expense';
 import Login from './components/Login/Login';
@@ -17,12 +17,20 @@ function App() {
   const [expenses, setExpense] = useState(initialExpenses);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  useEffect(() => {
+    if (localStorage.getItem('isLoggedInStatue') === '1') {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
   const loginHandler = (username, password) => {
     console.log(`login with username: ${username} and password: ${password}`);
     setIsLoggedIn(true);
+    localStorage.setItem('isLoggedInStatue', '1');
   }
 
   const logoutHandler = () => {
+    localStorage.removeItem('isLoggedInStatue');
     setIsLoggedIn(false);
   }
 
