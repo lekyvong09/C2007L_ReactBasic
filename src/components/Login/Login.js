@@ -33,11 +33,11 @@ function Login (props) {
     const [passwordState, passwordDispatcher] = useReducer(passwordReducer, {value: '', isValid: null});
 
     useEffect(() => {
-        console.log('useEffect validate form');
+        // console.log('useEffect validate form');
         setFormIsValid(usernameState.isValid && passwordState.isValid);
 
         return (() => {
-            console.log('clean up useEffect');
+            // console.log('clean up useEffect');
         });
     }, [usernameState, passwordState]);
 

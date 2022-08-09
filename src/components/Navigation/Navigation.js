@@ -19,6 +19,7 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import { Button } from '@mui/material';
+import AuthContext from '../../store/auth-context';
 
 const drawerWidth = 240;
 
@@ -70,6 +71,7 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
 function Navigation(props) {
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
+    const ctx = React.useContext(AuthContext);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -96,7 +98,7 @@ function Navigation(props) {
                     <Typography variant="h6" noWrap component="div">
                         Persistent drawer
                     </Typography>
-                    <Button color='inherit' onClick={props.onLogout}>Logout</Button>
+                    <Button color='inherit' onClick={ctx.onLogout}>Logout</Button>
                 </Toolbar>
             </AppBar>
         <Drawer
@@ -118,7 +120,7 @@ function Navigation(props) {
                 </IconButton>
             </DrawerHeader>
             <Divider />
-            <List>
+            {!ctx.storeIsLoggedIn && <List>
                 {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
                     <ListItem key={text} disablePadding>
                         <ListItemButton>
@@ -129,7 +131,7 @@ function Navigation(props) {
                         </ListItemButton>
                     </ListItem>
                 ))}
-            </List>
+            </List>}
             <Divider />
             <List>
                 {['All mail', 'Trash', 'Spam'].map((text, index) => (

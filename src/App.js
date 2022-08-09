@@ -4,6 +4,7 @@ import Expense from './components/Expense/Expense';
 import Login from './components/Login/Login';
 import Navigation from './components/Navigation/Navigation';
 import NewExpense from './components/NewExpense/NewExpense';
+import AuthContext from './store/auth-context';
 
 var initialExpenses = [
   {id: 1, title: 'Petrol Gas', amount: 5, date: new Date(2022,7,15)},
@@ -45,14 +46,17 @@ function App() {
   }
 
   return (
-    <>
-      {isLoggedIn && <Navigation isLoggedIn={isLoggedIn} onLogin={loginHandler} onLogout={logoutHandler}>
+    <AuthContext.Provider value={{
+      storeIsLoggedIn: isLoggedIn,
+      onLogout: logoutHandler
+    }}>
+      {isLoggedIn && <Navigation onLogin={loginHandler}>
           <NewExpense onSaveExpenseHandler={saveExpenseHandler}/>
           <Expense expenses={expenses}></Expense>
       </Navigation>}
 
       {!isLoggedIn && <Login onLogin={loginHandler}/>}
-    </>
+    </AuthContext.Provider>
     
   );
 }
