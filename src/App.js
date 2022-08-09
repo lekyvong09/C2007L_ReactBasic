@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import Expense from './components/Expense/Expense';
 import Login from './components/Login/Login';
 import Navigation from './components/Navigation/Navigation';
-import NewExpense from './components/NewExpense/NewExpense';
 import AuthContext from './store/auth-context';
+import NewProduct from './components/NewProduct/NewProduct';
+import Product from './components/Product/Product';
 
-var initialExpenses = [
-  {id: 1, title: 'Petrol Gas', amount: 5, date: new Date(2022,7,15)},
-  {id: 2, title: 'Cinema', amount: 10, date: new Date(2022,7,18)},
-  {id: 3, title: 'Coffee', amount: 5, date: new Date(2022,7,19)},
-  {id: 4, title: 'Dinner', amount: 20, date: new Date(2022,7,20)},
-  {id: 5, title: 'Lunch', amount: 30, date: new Date(2023,7,20)}
+var initialProducts = [
+  {id: 1, title: 'Superman: Action Comics Volume 5', amount: 12.99, date: new Date(2022,7,15)},
+  {id: 2, title: 'Batman: The Silver Age Omnibus Vol. 1', amount: 99.99, date: new Date(2022,7,18)},
+  {id: 3, title: 'The Fifth Science', amount: 24.99, date: new Date(2022,7,19)},
+  {id: 4, title: 'The Summer House', amount: 15.00, date: new Date(2022,7,20)},
+  {id: 5, title: 'The Art of Computer Programming', amount: 187.99, date: new Date(2023,7,20)}
 ];
 
 function App() {
-  const [expenses, setExpense] = useState(initialExpenses);
+  const [products, setProduct] = useState(initialProducts);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -35,13 +35,13 @@ function App() {
     setIsLoggedIn(false);
   }
 
-  const saveExpenseHandler = (inputExpense) => {
-    const expenseData = {
-      ...inputExpense,
+  const saveProductHandler = (data) => {
+    const productData = {
+      ...data,
       id: Math.random()
     };
-    setExpense(prevState => {
-      return [...prevState, expenseData];
+    setProduct(prevState => {
+      return [...prevState, productData];
     });
   }
 
@@ -51,8 +51,8 @@ function App() {
       onLogout: logoutHandler
     }}>
       {isLoggedIn && <Navigation onLogin={loginHandler}>
-          <NewExpense onSaveExpenseHandler={saveExpenseHandler}/>
-          <Expense expenses={expenses}></Expense>
+          <NewProduct onSaveProductHandler={saveProductHandler}/>
+          <Product products={products}></Product>
       </Navigation>}
 
       {!isLoggedIn && <Login onLogin={loginHandler}/>}

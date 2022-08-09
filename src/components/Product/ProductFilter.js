@@ -2,7 +2,7 @@ import { Box, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { useState } from "react";
 
 
-function ExpenseFilter(props) {
+function ProductFilter(props) {
     const [selectedYear, setSelectedYear] = useState(2022);
 
     const yearChangeHandler = (event) => {
@@ -30,4 +30,4 @@ function ExpenseFilter(props) {
     );
 }
 
-export default ExpenseFilter;
+export default ProductFilter;

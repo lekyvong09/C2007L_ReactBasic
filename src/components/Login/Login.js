@@ -76,7 +76,7 @@ function Login (props) {
                 <Stack spacing={2} pt={5} margin="dense">
                     <TextField
                         error={usernameState.isValid === false}
-                        id="expense-form-username" 
+                        id="product-form-username" 
                         label="Username" 
                         variant="outlined" 
                         onChange={usernameChangeHandler}
@@ -85,7 +85,7 @@ function Login (props) {
                     />
                     <TextField
                         error={passwordState.isValid === false}
-                        id="expense-form-password" 
+                        id="product-form-password" 
                         label="Password" 
                         variant="outlined" 
                         onChange={passwordChangeHandler}

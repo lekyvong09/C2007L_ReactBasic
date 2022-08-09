@@ -5,7 +5,7 @@ import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { useState } from "react";
 
-function ExpenseForm(props) {
+function ProductForm(props) {
     const [inputDate, setInputDate] = useState(new Date());
     const [title, setTitle] = useState('');
     const [amount, setAmount] = useState('');
@@ -36,12 +36,12 @@ function ExpenseForm(props) {
             setIsValidDate(false);
             return;
         }
-        var expenseData = {
+        var data = {
             title: title,
             amount: amount,
             date: inputDate
         };
-        props.onSaveExpense(expenseData);
+        props.onSaveProduct(data);
 
         setTitle('');
         setAmount('');
@@ -54,7 +54,7 @@ function ExpenseForm(props) {
                 <Stack spacing={2} pt={5} margin="dense">
                     <TextField
                         error={!isValidTitle}
-                        id="expense-form-title" 
+                        id="product-form-title" 
                         label="Title" 
                         variant="outlined" 
                         onChange={titleChangeHandler}
@@ -62,7 +62,7 @@ function ExpenseForm(props) {
                     />
                     <TextField 
                         error= {!isValidAmount}
-                        id="expense-form-amount" 
+                        id="product-form-amount" 
                         label="Amount" 
                         variant="outlined"
                         type="number"
@@ -92,11 +92,11 @@ function ExpenseForm(props) {
                         color="primary"
                         endIcon={<Send />}
                         margin="dense"
-                    >Add Expense</Button>
+                    >Add Product</Button>
                 </Box>
             </form>
         </Container>
     )
 }
 
-export default ExpenseForm;
+export default ProductForm;
