@@ -1,50 +1,71 @@
 import { Box, Button, Container, Stack, TextField } from "@mui/material";
-import { useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 
 const usernameReducer = (state , action) => {
+    if (action.type === 'USERNAME_INPUT_CHANGE') {
+        return { value: action.payload, isValid: action.payload.trim().length !== 0};
+    }
+    if (action.type === 'USERNAME_INPUT_BLUR') {
+        return { value: state.value, isValid: state.value.trim().length !== 0};
+    }
+    return { value: '', isValid: false};
+}
+
+const passwordReducer = (state, action) => {
+    if (action.type === 'PASSWORD_INPUT_CHANGE') {
+        return { value: action.payload, isValid: action.payload.trim().length !== 0};
+    }
+    if (action.type === 'PASSWORD_INPUT_BLUR') {
+        return { value: state.value, isValid: state.value.trim().length !== 0};
+    }
     return { value: '', isValid: false};
 }
 
 function Login (props) {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    // const [username, setUsername] = useState('');
+    // const [password, setPassword] = useState('');
 
-    const [isValidUsername, setIsValidUsername] = useState(true);
-    const [isValidPassword, setIsValidPassword] = useState(true);
+    // const [isValidUsername, setIsValidUsername] = useState(true);
+    // const [isValidPassword, setIsValidPassword] = useState(true);
     const [formIsValid, setFormIsValid] = useState(false);
 
-    const [usernameState, usernameDispatcher] = useReducer(usernameReducer, {value: '', isValid: false});
+    const [usernameState, usernameDispatcher] = useReducer(usernameReducer, {value: '', isValid: null});
+    const [passwordState, passwordDispatcher] = useReducer(passwordReducer, {value: '', isValid: null});
 
-    // useEffect(() => {
-    //     console.log('useEffect validate form');
-    //     setFormIsValid(password.trim().length !== 0 && username.trim().length !== 0);
+    useEffect(() => {
+        console.log('useEffect validate form');
+        setFormIsValid(usernameState.isValid && passwordState.isValid);
 
-    //     return (() => {
-    //         console.log('clean up useEffect');
-    //     });
-    // }, [password, username]);
+        return (() => {
+            console.log('clean up useEffect');
+        });
+    }, [usernameState, passwordState]);
 
     const usernameChangeHandler = (event) => {
-        setUsername(event.target.value);
-        setFormIsValid(event.target.value.trim().length !== 0 && password.trim().length !== 0);
+        // setUsername(event.target.value);
+        usernameDispatcher({type: 'USERNAME_INPUT_CHANGE', payload: event.target.value});
+        // setFormIsValid(event.target.value.trim().length !== 0 && passwordState.isValid);
     }
     const passwordChangeHandler = (event) => {
-        setPassword(event.target.value);
-        setFormIsValid(event.target.value.trim().length !== 0 && username.trim().length !== 0);
+        // setPassword(event.target.value);
+        passwordDispatcher({type: 'PASSWORD_INPUT_CHANGE', payload: event.target.value});
+        // setFormIsValid(event.target.value.trim().length !== 0 && usernameState.isValid);
     }
     const validateUsernameHandler = () => {
-        setIsValidUsername(username.trim().length !== 0);
+        // setIsValidUsername(username.trim().length !== 0);
+        usernameDispatcher({type: 'USERNAME_INPUT_BLUR'});
     }
     const validatePasswordHandler = () => {
-        setIsValidPassword(password.trim().length !== 0);
+        // setIsValidPassword(password.trim().length !== 0);
+        passwordDispatcher({type: 'PASSWORD_INPUT_BLUR'});
     }
 
     const submitHandler = (event) => {
         event.preventDefault();
-        props.onLogin(username, password);
+        props.onLogin(usernameState.value, passwordState.value);
 
-        setUsername('');
-        setPassword('');
+        // setUsername('');
+        // setPassword('');
 
     }
 
@@ -54,21 +75,21 @@ function Login (props) {
             <form onSubmit={submitHandler}>
                 <Stack spacing={2} pt={5} margin="dense">
                     <TextField
-                        error={!isValidUsername}
+                        error={usernameState.isValid === false}
                         id="expense-form-username" 
                         label="Username" 
                         variant="outlined" 
                         onChange={usernameChangeHandler}
-                        value={username}
+                        value={usernameState.value}
                         onBlur={validateUsernameHandler}
                     />
                     <TextField
-                        error={!isValidPassword}
+                        error={passwordState.isValid === false}
                         id="expense-form-password" 
                         label="Password" 
                         variant="outlined" 
                         onChange={passwordChangeHandler}
-                        value={password}
+                        value={passwordState.value}
                         type='password'
                         onBlur={validatePasswordHandler}
                     />
