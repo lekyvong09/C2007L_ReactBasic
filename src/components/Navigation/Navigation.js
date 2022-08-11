@@ -16,11 +16,11 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import { Button } from '@mui/material';
 import AuthContext from '../../store/auth-context';
 import { Link } from 'react-router-dom';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
 
 const drawerWidth = 240;
   
@@ -119,7 +119,7 @@ function Navigation(props) {
                     <ListItem key={text} disablePadding>
                         <ListItemButton component={Link} to={mapIndexWithPath(index)}>
                             <ListItemIcon>
-                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                                {index % 2 === 0 ? <ModeEditIcon /> : <ShoppingCartIcon />}
                             </ListItemIcon>
                             <ListItemText primary={text} />
                         </ListItemButton>

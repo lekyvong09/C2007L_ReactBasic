@@ -8,6 +8,7 @@ import Product from './components/Product/Product';
 import { styled } from '@mui/material';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
+import ItemList from './Shop/ItemList';
 
 var initialProducts = [
   {id: 1, title: 'Superman: Action Comics Volume 5', amount: 12.99, date: new Date(2022,7,15)},
@@ -109,6 +110,15 @@ function App() {
                 </>
               </Main>
             </ProtectedRoute>
+        } />
+
+        <Route path='shop' element={
+          <ProtectedRoute>
+            <Main open={isDrawerOpen}>
+              <DrawerHeader />
+              <ItemList />
+            </Main>
+          </ProtectedRoute>
         } />
 
         <Route index element={<Login onLogin={loginHandler}/>} />
