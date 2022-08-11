@@ -6,6 +6,8 @@ import AuthContext from './store/auth-context';
 import NewProduct from './components/NewProduct/NewProduct';
 import Product from './components/Product/Product';
 import { styled } from '@mui/material';
+import { Route, Routes, useNavigate } from 'react-router-dom';
+import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
 
 var initialProducts = [
   {id: 1, title: 'Superman: Action Comics Volume 5', amount: 12.99, date: new Date(2022,7,15)},
@@ -25,13 +27,13 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    marginLeft: `-${drawerWidth}px`,
+    marginLeft: 0,
     ...(open && {
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
       }),
-      marginLeft: 0,
+      marginLeft: `${drawerWidth}px`,
     }),
   }),
 );
@@ -49,6 +51,7 @@ function App() {
   const [products, setProduct] = useState(initialProducts);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
+  const navigate = useNavigate();
 
   const drawerOpenHandler = (isOpen) => {
     setIsDrawerOpen(isOpen);
@@ -62,13 +65,20 @@ function App() {
 
   const loginHandler = (username, password) => {
     console.log(`login with username: ${username} and password: ${password}`);
-    setIsLoggedIn(true);
-    localStorage.setItem('isLoggedInStatue', '1');
+    
+    if (username === 'admin' && password === 'password') {
+      setIsLoggedIn(true);
+      localStorage.setItem('isLoggedInStatue', '1');
+      navigate('/product');
+    } else {
+      setIsLoggedIn(false);
+    }
   }
 
   const logoutHandler = () => {
     localStorage.removeItem('isLoggedInStatue');
     setIsLoggedIn(false);
+    navigate('/');
   }
 
   const saveProductHandler = (data) => {
@@ -88,15 +98,24 @@ function App() {
     }}>
       <Navigation onLogin={loginHandler} onDrawerOpen={drawerOpenHandler} isDrawerOpen={isDrawerOpen}> </Navigation>
       
-      {isLoggedIn && <Main open={isDrawerOpen}>
-        <DrawerHeader />
-        <>
-          <NewProduct onSaveProductHandler={saveProductHandler}/>
-          <Product products={products}></Product>
-        </>
-      </Main>}
+      <Routes>
+        <Route path='product' element={
+            <ProtectedRoute>
+              <Main open={isDrawerOpen}>
+                <DrawerHeader />
+                <>
+                  <NewProduct onSaveProductHandler={saveProductHandler}/>
+                  <Product products={products}></Product>
+                </>
+              </Main>
+            </ProtectedRoute>
+        } />
 
-      {!isLoggedIn && <Login onLogin={loginHandler}/>}
+        <Route index element={<Login onLogin={loginHandler}/>} />
+        <Route path='login' element={<Login onLogin={loginHandler}/>} />
+
+      </Routes>
+
     </AuthContext.Provider>
     
   );

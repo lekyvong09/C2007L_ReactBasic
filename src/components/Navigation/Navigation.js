@@ -20,6 +20,7 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import { Button } from '@mui/material';
 import AuthContext from '../../store/auth-context';
+import { Link } from 'react-router-dom';
 
 const drawerWidth = 240;
   
@@ -61,6 +62,18 @@ function Navigation(props) {
         props.onDrawerOpen(false);
       };
 
+
+    const mapIndexWithPath = (index) => {
+      switch (index) {
+        case 0:
+          return "/product";
+        case 1:
+          return "/shop";
+        default:
+          return "/shop";
+      }
+    }
+
     return (
       <>
         {ctx.storeIsLoggedIn && <Box sx={{ display: 'flex' }}>
@@ -101,10 +114,10 @@ function Navigation(props) {
                 </IconButton>
             </DrawerHeader>
             <Divider />
-            {!ctx.storeIsLoggedIn && <List>
-                {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+            <List>
+                {['Manage Product', 'Shop'].map((text, index) => (
                     <ListItem key={text} disablePadding>
-                        <ListItemButton>
+                        <ListItemButton component={Link} to={mapIndexWithPath(index)}>
                             <ListItemIcon>
                                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                             </ListItemIcon>
@@ -112,20 +125,8 @@ function Navigation(props) {
                         </ListItemButton>
                     </ListItem>
                 ))}
-            </List>}
-            <Divider />
-            <List>
-                {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                    <ListItem key={text} disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon>
-                            {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
             </List>
+            <Divider />
         </Drawer>
     </Box>}
     </>
