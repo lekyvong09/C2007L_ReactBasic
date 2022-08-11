@@ -22,76 +22,57 @@ import { Button } from '@mui/material';
 import AuthContext from '../../store/auth-context';
 
 const drawerWidth = 240;
-
-const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
-    ({ theme, open }) => ({
-      flexGrow: 1,
-      padding: theme.spacing(3),
-      transition: theme.transitions.create('margin', {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-      }),
-      marginLeft: `-${drawerWidth}px`,
-      ...(open && {
-        transition: theme.transitions.create('margin', {
-          easing: theme.transitions.easing.easeOut,
-          duration: theme.transitions.duration.enteringScreen,
-        }),
-        marginLeft: 0,
-      }),
-    }),
-  );
   
-  const AppBar = styled(MuiAppBar, {
-    shouldForwardProp: (prop) => prop !== 'open',
-  })(({ theme, open }) => ({
+const AppBar = styled(MuiAppBar, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})(({ theme, open }) => ({
+  transition: theme.transitions.create(['margin', 'width'], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  ...(open && {
+    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: `${drawerWidth}px`,
     transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
     }),
-    ...(open && {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: `${drawerWidth}px`,
-      transition: theme.transitions.create(['margin', 'width'], {
-        easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-    }),
-  }));
+  }),
+}));
   
-  const DrawerHeader = styled('div')(({ theme }) => ({
-    display: 'flex',
-    alignItems: 'center',
-    padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
-    justifyContent: 'flex-end',
-  }));
+const DrawerHeader = styled('div')(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  padding: theme.spacing(0, 1),
+  // necessary for content to be below app bar
+  ...theme.mixins.toolbar,
+  justifyContent: 'flex-end',
+}));
 
 function Navigation(props) {
     const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
     const ctx = React.useContext(AuthContext);
 
     const handleDrawerOpen = () => {
-        setOpen(true);
+        props.onDrawerOpen(true);
       };
     
       const handleDrawerClose = () => {
-        setOpen(false);
+        props.onDrawerOpen(false);
       };
 
     return (
-        <Box sx={{ display: 'flex' }}>
+      <>
+        {ctx.storeIsLoggedIn && <Box sx={{ display: 'flex' }}>
             <CssBaseline />
-            <AppBar position="fixed" open={open}>
+            <AppBar position="fixed" open={props.isDrawerOpen}>
                 <Toolbar>
                     <IconButton
                         color="inherit"
                         aria-label="open drawer"
                         onClick={handleDrawerOpen}
                         edge="start"
-                        sx={{ mr: 2, ...(open && { display: 'none' }) }}
+                        sx={{ mr: 2, ...(props.isDrawerOpen && { display: 'none' }) }}
                     >
                         <MenuIcon />
                     </IconButton>
@@ -112,7 +93,7 @@ function Navigation(props) {
             }}
             variant="persistent"
             anchor="left"
-            open={open}
+            open={props.isDrawerOpen}
         >
             <DrawerHeader>
                 <IconButton onClick={handleDrawerClose}>
@@ -146,11 +127,8 @@ function Navigation(props) {
                 ))}
             </List>
         </Drawer>
-        <Main open={open}>
-            <DrawerHeader />
-            {props.children}
-        </Main>
-    </Box>
+    </Box>}
+    </>
     );
 }
 
