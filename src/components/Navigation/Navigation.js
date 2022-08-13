@@ -16,11 +16,14 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { Button } from '@mui/material';
+import { Badge, Button } from '@mui/material';
 import AuthContext from '../../store/auth-context';
 import { Link } from 'react-router-dom';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import { red } from '@mui/material/colors';
+import ShoppingCart from '../../Shop/ShoppingCart';
+
 
 const drawerWidth = 240;
   
@@ -50,6 +53,15 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }));
 
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    right: -4,
+    top: 3,
+    border: `2px solid ${theme.palette.background.paper}`,
+    padding: '0 4px',
+  },
+}));
+
 function Navigation(props) {
     const theme = useTheme();
     const ctx = React.useContext(AuthContext);
@@ -74,6 +86,16 @@ function Navigation(props) {
       }
     }
 
+    const [openModal, setOpenModal] = React.useState(false);
+
+    const handleClickOpenModal = () => {
+      setOpenModal(true);
+    };
+
+    const handleCloseModal = () => {
+      setOpenModal(false);
+    };
+
     return (
       <>
         {ctx.storeIsLoggedIn && <Box sx={{ display: 'flex' }}>
@@ -89,9 +111,16 @@ function Navigation(props) {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" noWrap component="div">
-                        Persistent drawer
+                    <Typography variant="h6" noWrap component="div" sx={{flexGrow: 1}}>
+                        Products
                     </Typography>
+
+                    <IconButton aria-label="cart" sx={{marginRight: 2}} onClick={handleClickOpenModal}>
+                      <StyledBadge badgeContent={4} style={{color: red[300]}}>
+                        <ShoppingCartIcon sx={{width: 28, height: 28, color: red[500]}}/>
+                      </StyledBadge>
+                    </IconButton>
+
                     <Button color='inherit' onClick={ctx.onLogout}>Logout</Button>
                 </Toolbar>
             </AppBar>
@@ -129,7 +158,11 @@ function Navigation(props) {
             <Divider />
         </Drawer>
     </Box>}
+      
+    <ShoppingCart openModal={openModal} onCloseModal={handleCloseModal}/>
+
     </>
+    
     );
 }
 

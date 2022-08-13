@@ -9,18 +9,24 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { Box } from '@mui/material';
 
+function ItemCard(props) {
+    var loadImage = require.context('../assets/images', true);
+    var img_src = loadImage(props.item.imageUrl);
 
-function ItemCard() {
+    const addItemHandler = () => {
+        console.log('adding item handler');
+    }
 
     return (
         <Card sx={{ maxWidth: 345 }}>
             <CardHeader
                 avatar={
-                <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-                    R
+                <Avatar sx={{ bgcolor: red[500] }} aria-label="product">
+                    {props.item.category}
                 </Avatar>
                 }
                 action={
@@ -28,28 +34,30 @@ function ItemCard() {
                     <MoreVertIcon />
                 </IconButton>
                 }
-                title="Shrimp and Chorizo Paella"
-                subheader="September 14, 2016"
+                title={props.item.title}
+                subheader={props.item.date
+                            .toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'})}
             />
             <CardMedia
                 component="img"
                 height="494"
-                image={require("../assets/images/BOOK-COMIC-1000.jpg")}
-                alt="Paella dish"
+                image={img_src}  /// ../assets/images/BOOK-COMIC-1000.jpg
+                alt={props.item.title}
             />
             <CardContent>
-                <Typography variant="body2" color="text.secondary">
-                This impressive paella is a perfect party dish and a fun meal to cook
-                together with your guests. Add 1 cup of frozen peas along with the mussels,
-                if you like.
-                </Typography>
+                <Box sx={{height: 30}}>
+                    <Typography variant="body2" color="text.secondary">
+                        {`this is description of ${props.item.title}`}
+                    </Typography>
+                </Box>
+                
             </CardContent>
             <CardActions disableSpacing>
                 <IconButton aria-label="add to favorites">
                     <FavoriteIcon />
                 </IconButton>
-                <IconButton aria-label="share">
-                    <ShareIcon />
+                <IconButton aria-label="add to cart" onClick={addItemHandler}>
+                    <ShoppingCartIcon />
                 </IconButton>
             </CardActions>
       

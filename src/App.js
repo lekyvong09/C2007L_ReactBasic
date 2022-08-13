@@ -6,16 +6,16 @@ import AuthContext from './store/auth-context';
 import NewProduct from './components/NewProduct/NewProduct';
 import Product from './components/Product/Product';
 import { styled } from '@mui/material';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
 import ItemList from './Shop/ItemList';
 
 var initialProducts = [
-  {id: 1, title: 'Superman: Action Comics Volume 5', amount: 12.99, date: new Date(2022,7,15)},
-  {id: 2, title: 'Batman: The Silver Age Omnibus Vol. 1', amount: 99.99, date: new Date(2022,7,18)},
-  {id: 3, title: 'The Fifth Science', amount: 24.99, date: new Date(2022,7,19)},
-  {id: 4, title: 'The Summer House', amount: 15.00, date: new Date(2022,7,20)},
-  {id: 5, title: 'The Art of Computer Programming', amount: 187.99, date: new Date(2023,7,20)}
+  {id: 1, title: 'Superman: Action Comics Volume 5', amount: 12.99, date: new Date(2022,7,15), imageUrl: "./BOOK-COMIC-1000.jpg", category: 'C'},
+  {id: 2, title: 'Batman: The Silver Age Omnibus Vol. 1', amount: 99.99, date: new Date(2022,7,18), imageUrl: "./BOOK-COMIC-1001.jpg", category: 'C'},
+  {id: 3, title: 'The Fifth Science', amount: 24.99, date: new Date(2022,7,19), imageUrl: "./BOOK-FICTION-1002.jpg", category: 'F'},
+  {id: 4, title: 'The Summer House', amount: 15.00, date: new Date(2022,7,20), imageUrl: "./BOOK-ROMANTIC-1003.jpg", category: 'R'},
+  {id: 5, title: 'The Art of Computer Programming', amount: 187.99, date: new Date(2023,7,20), imageUrl: "./BOOK-PROGRAMMING-1004.jpg", category: 'P'}
 ];
 
 const drawerWidth = 240;
@@ -64,13 +64,16 @@ function App() {
     }
   }, []);
 
+  const location = useLocation();
+
   const loginHandler = (username, password) => {
     console.log(`login with username: ${username} and password: ${password}`);
     
     if (username === 'admin' && password === 'password') {
       setIsLoggedIn(true);
       localStorage.setItem('isLoggedInStatue', '1');
-      navigate('/product');
+      const origin = location.state?.from?.pathname || '/shop';
+      navigate(origin);
     } else {
       setIsLoggedIn(false);
     }
@@ -116,7 +119,7 @@ function App() {
           <ProtectedRoute>
             <Main open={isDrawerOpen}>
               <DrawerHeader />
-              <ItemList />
+              <ItemList isDrawerOpen={isDrawerOpen} products={initialProducts}/>
             </Main>
           </ProtectedRoute>
         } />

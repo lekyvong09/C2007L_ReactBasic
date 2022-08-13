@@ -9,21 +9,20 @@ import ItemCard from "./ItemCard";
    * xl, extra-large: 1920px
    */
   
-function ItemList() {
+function ItemList(props) {
     return (
         <Grid container spacing={2}>
-            <Grid item lg={3} md={4} sm={6}>
-                <ItemCard />
-            </Grid>
-            <Grid item lg={3} md={4} sm={6}>
-                <ItemCard />
-            </Grid>
-            <Grid item lg={3} md={4} sm={6}>
-                <ItemCard />
-            </Grid>
-            <Grid item lg={3} md={4} sm={6}>
-                <ItemCard />
-            </Grid>
+            {props.products.map(product => 
+                <Grid item 
+                        key={product.id}
+                        lg={props.isDrawerOpen ? 4 : 3} 
+                        md={props.isDrawerOpen ? 6 : 4} 
+                        sm={props.isDrawerOpen ? 12 : 6}>
+                    <ItemCard item={product}/>
+                </Grid>)
+            }
+            
+            
         </Grid>
     );
 }
