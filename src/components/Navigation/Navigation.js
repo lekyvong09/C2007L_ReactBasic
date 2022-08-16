@@ -23,6 +23,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import { red } from '@mui/material/colors';
 import ShoppingCart from '../../Shop/ShoppingCart';
+import CartContext from '../../store/cart-context';
 
 
 const drawerWidth = 240;
@@ -65,6 +66,10 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 function Navigation(props) {
     const theme = useTheme();
     const ctx = React.useContext(AuthContext);
+    const cartContext = React.useContext(CartContext);
+    const numberofCartItems = cartContext.items.reduce((total, item) => {
+      return total + item.qty;
+    }, 0);
 
     const handleDrawerOpen = () => {
         props.onDrawerOpen(true);
@@ -116,7 +121,7 @@ function Navigation(props) {
                     </Typography>
 
                     <IconButton aria-label="cart" sx={{marginRight: 2}} onClick={handleClickOpenModal}>
-                      <StyledBadge badgeContent={4} style={{color: red[300]}}>
+                      <StyledBadge badgeContent={numberofCartItems} style={{color: red[300]}}>
                         <ShoppingCartIcon sx={{width: 28, height: 28, color: red[500]}}/>
                       </StyledBadge>
                     </IconButton>

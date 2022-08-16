@@ -10,18 +10,22 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { useContext } from 'react';
+import CartContext from '../store/cart-context';
 
 
 function ShoppingCart(props) {
-  const cartItems = [
-    {id: 1, title: 'Superman: Action Comics Volume 5', unit: 12.99, imageUrl: "./BOOK-COMIC-1000.jpg", qty: 2},
-    {id: 2, title: 'Batman: The Silver Age Omnibus', unit: 99.99, imageUrl: "./BOOK-COMIC-1001.jpg", qty: 1},
-    {id: 3, title: 'The Fifth Science', unit: 24.99, imageUrl: "./BOOK-FICTION-1002.jpg", qty: 3},
-    {id: 4, title: 'The Summer House', unit: 15.00, imageUrl: "./BOOK-ROMANTIC-1003.jpg", qty: 1},
-    {id: 5, title: 'The Art of Computer Programming', unit: 187.99, imageUrl: "./BOOK-PROGRAMMING-1004.jpg", qty: 2}
-  ];
+  // const cartItems = [
+  //   {id: 1, title: 'Superman: Action Comics Volume 5', unit: 12.99, imageUrl: "./BOOK-COMIC-1000.jpg", qty: 2},
+  //   {id: 2, title: 'Batman: The Silver Age Omnibus', unit: 99.99, imageUrl: "./BOOK-COMIC-1001.jpg", qty: 1},
+  //   {id: 3, title: 'The Fifth Science', unit: 24.99, imageUrl: "./BOOK-FICTION-1002.jpg", qty: 3},
+  //   {id: 4, title: 'The Summer House', unit: 15.00, imageUrl: "./BOOK-ROMANTIC-1003.jpg", qty: 1},
+  //   {id: 5, title: 'The Art of Computer Programming', unit: 187.99, imageUrl: "./BOOK-PROGRAMMING-1004.jpg", qty: 2}
+  // ];
 
-  let total = cartItems.map(item => item.unit * item.qty)
+  const cartContext = useContext(CartContext);
+
+  let total = cartContext.items.map(item => item.unit * item.qty)
                         .reduce((sum, i) => sum + i, 0);
 
   var loadImage = require.context('../assets/images', true);
@@ -46,7 +50,7 @@ function ShoppingCart(props) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {cartItems.map((row) => (
+                {cartContext.items.map((row) => (
                   <TableRow key={row.id}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >

@@ -9,6 +9,7 @@ import { styled } from '@mui/material';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
 import ItemList from './Shop/ItemList';
+import CartProvider from './store/CartProvider';
 
 var initialProducts = [
   {id: 1, title: 'Superman: Action Comics Volume 5', amount: 12.99, date: new Date(2022,7,15), imageUrl: "./BOOK-COMIC-1000.jpg", category: 'C'},
@@ -95,11 +96,13 @@ function App() {
     });
   }
 
+
   return (
     <AuthContext.Provider value={{
       storeIsLoggedIn: isLoggedIn,
       onLogout: logoutHandler
     }}>
+      <CartProvider>
       <Navigation onLogin={loginHandler} onDrawerOpen={drawerOpenHandler} isDrawerOpen={isDrawerOpen}> </Navigation>
       
       <Routes>
@@ -128,7 +131,7 @@ function App() {
         <Route path='login' element={<Login onLogin={loginHandler}/>} />
 
       </Routes>
-
+      </CartProvider>
     </AuthContext.Provider>
     
   );
