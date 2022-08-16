@@ -12,13 +12,21 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { Box } from '@mui/material';
+import CartContext from '../store/cart-context';
 
 function ItemCard(props) {
     var loadImage = require.context('../assets/images', true);
     var img_src = loadImage(props.item.imageUrl);
+    const cartContext = React.useContext(CartContext);
 
     const addItemHandler = () => {
-        console.log('adding item handler');
+        cartContext.addItem({
+            id: props.item.id,
+            title: props.item.title,
+            unit: props.item.amount,
+            imageUrl: props.item.imageUrl,
+            qty: 1
+        });
     }
 
     return (
