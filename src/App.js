@@ -48,6 +48,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const drawerOpenHandler = (isOpen) => {
@@ -111,20 +112,28 @@ function App() {
 
   const fetchDataHandler = async () => {
     setIsLoading(true);
-    const response = await fetch('http://localhost:8080/api/products');
-    const data = await response.json();
-    const transformedProducts = data.products.map(product => {
-      return {
-        id: product.id,
-        title: product.title,
-        amount: product.amount,
-        date: new Date(product.date),
-        imageUrl: product.imageUrl,
-        category: product.category
-      }
-    }); 
-    setProduct(transformedProducts);
-    setIsLoading(false);
+    setError(null);
+    try {
+      const response = await fetch('http://localhost:8080/api/products/return404');
+      const data = await response.json();
+      const transformedProducts = data.products.map(product => {
+        return {
+          id: product.id,
+          title: product.title,
+          amount: product.amount,
+          date: new Date(product.date),
+          imageUrl: product.imageUrl,
+          category: product.category
+        }
+      }); 
+      setProduct(transformedProducts);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+      console.log(error.message);
+      setError(error.message);
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -157,7 +166,9 @@ function App() {
           <ProtectedRoute>
             <Main open={isDrawerOpen}>
               <DrawerHeader />
-              {!isLoading && <ItemList isDrawerOpen={isDrawerOpen} products={products}/>}
+              {!isLoading && error && <p>{error}</p>}
+              {!isLoading && products.length > 0 && <ItemList isDrawerOpen={isDrawerOpen} products={products}/>}
+              {!isLoading && products.length === 0 && !error && <p>No products found</p>}
               {isLoading && <p>Loading....</p>}
             </Main>
           </ProtectedRoute>
