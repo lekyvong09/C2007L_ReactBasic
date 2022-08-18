@@ -12,6 +12,9 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { useContext } from 'react';
 import CartContext from '../store/cart-context';
+import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
+import IconButton from '@mui/material/IconButton';
+import IndeterminateCheckBoxOutlinedIcon from '@mui/icons-material/IndeterminateCheckBoxOutlined';
 
 
 function ShoppingCart(props) {
@@ -30,6 +33,22 @@ function ShoppingCart(props) {
 
   var loadImage = require.context('../assets/images', true);
 
+  const plusHandler = (cartItem) => {
+    return () => {
+      cartContext.addItem({
+        id: cartItem.id,
+        title: cartItem.title,
+        unit: cartItem.amount,
+        imageUrl: cartItem.imageUrl,
+        qty: 1
+      });
+    }
+  }
+
+  const minusHandler = (id) => {
+    return () => cartContext.removeItem(id);
+  }
+
     return (
         <Dialog maxWidth={'lg'} open={props.openModal} onClose={props.onCloseModal}>
         <DialogTitle>Subscribe</DialogTitle>
@@ -47,6 +66,7 @@ function ShoppingCart(props) {
                   <TableCell align="right">Qty</TableCell>
                   <TableCell align="right">Unit</TableCell>
                   <TableCell align="right">Sum</TableCell>
+                  <TableCell align="center">Action</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -67,6 +87,14 @@ function ShoppingCart(props) {
                     <TableCell align="right">{row.qty}</TableCell>
                     <TableCell align="right">{row.unit.toFixed(2)}</TableCell>
                     <TableCell align="right">{(row.qty * row.unit).toFixed(2)}</TableCell>
+                    <TableCell align="right">
+                      <IconButton aria-label="minus" onClick={minusHandler(row.id)}>
+                        <IndeterminateCheckBoxOutlinedIcon />
+                      </IconButton>
+                      <IconButton aria-label="add" onClick={plusHandler(row)}>
+                        <AddBoxOutlinedIcon />
+                      </IconButton>
+                    </TableCell>
                   </TableRow>
                 ))}
 
@@ -80,7 +108,7 @@ function ShoppingCart(props) {
         </DialogContent>
         <DialogActions>
           <Button onClick={props.onCloseModal}>Cancel</Button>
-          <Button onClick={props.onCloseModal}>Subscribe</Button>
+          {cartContext.items.length !==0 && <Button onClick={props.onCloseModal}>Order</Button>}
         </DialogActions>
       </Dialog>
     );
