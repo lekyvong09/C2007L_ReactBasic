@@ -11,13 +11,7 @@ import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
 import ItemList from './Shop/ItemList';
 import CartProvider from './store/CartProvider';
 
-var initialProducts = [
-  {id: 1, title: 'Superman: Action Comics Volume 5', amount: 12.99, date: new Date(2022,7,15), imageUrl: "./BOOK-COMIC-1000.jpg", category: 'C'},
-  {id: 2, title: 'Batman: The Silver Age Omnibus Vol. 1', amount: 99.99, date: new Date(2022,7,18), imageUrl: "./BOOK-COMIC-1001.jpg", category: 'C'},
-  {id: 3, title: 'The Fifth Science', amount: 24.99, date: new Date(2022,7,19), imageUrl: "./BOOK-FICTION-1002.jpg", category: 'F'},
-  {id: 4, title: 'The Summer House', amount: 15.00, date: new Date(2022,7,20), imageUrl: "./BOOK-ROMANTIC-1003.jpg", category: 'R'},
-  {id: 5, title: 'The Art of Computer Programming', amount: 187.99, date: new Date(2023,7,20), imageUrl: "./BOOK-PROGRAMMING-1004.jpg", category: 'P'}
-];
+var initialProducts = [];
 
 const drawerWidth = 240;
 
@@ -53,6 +47,7 @@ function App() {
   const [products, setProduct] = useState(initialProducts);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const drawerOpenHandler = (isOpen) => {
@@ -96,6 +91,41 @@ function App() {
     });
   }
 
+  // const fetchDataHandler = () => {
+  //   fetch('http://localhost:8080/api/products')
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       const transformedProducts = data.products.map(product => {
+  //         return {
+  //           id: product.id,
+  //           title: product.title,
+  //           amount: product.amount,
+  //           date: new Date(product.date),
+  //           imageUrl: product.imageUrl,
+  //           category: product.category
+  //         }
+  //       });
+  //       setProduct(transformedProducts);
+  //     });
+  // }
+
+  const fetchDataHandler = async () => {
+    setIsLoading(true);
+    const response = await fetch('http://localhost:8080/api/products');
+    const data = await response.json();
+    const transformedProducts = data.products.map(product => {
+      return {
+        id: product.id,
+        title: product.title,
+        amount: product.amount,
+        date: new Date(product.date),
+        imageUrl: product.imageUrl,
+        category: product.category
+      }
+    }); 
+    setProduct(transformedProducts);
+    setIsLoading(false);
+  }
 
   return (
     <AuthContext.Provider value={{
@@ -103,7 +133,12 @@ function App() {
       onLogout: logoutHandler
     }}>
       <CartProvider>
-      <Navigation onLogin={loginHandler} onDrawerOpen={drawerOpenHandler} isDrawerOpen={isDrawerOpen}> </Navigation>
+      <Navigation 
+        onLogin={loginHandler} 
+        onDrawerOpen={drawerOpenHandler} 
+        isDrawerOpen={isDrawerOpen}
+        onFetchData={fetchDataHandler}
+      ></Navigation>
       
       <Routes>
         <Route path='product' element={
@@ -122,7 +157,8 @@ function App() {
           <ProtectedRoute>
             <Main open={isDrawerOpen}>
               <DrawerHeader />
-              <ItemList isDrawerOpen={isDrawerOpen} products={initialProducts}/>
+              {!isLoading && <ItemList isDrawerOpen={isDrawerOpen} products={products}/>}
+              {isLoading && <p>Loading....</p>}
             </Main>
           </ProtectedRoute>
         } />

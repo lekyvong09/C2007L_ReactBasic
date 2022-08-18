@@ -125,7 +125,8 @@ function Navigation(props) {
                         <ShoppingCartIcon sx={{width: 28, height: 28, color: red[500]}}/>
                       </StyledBadge>
                     </IconButton>
-
+                    
+                    <Button color='inherit' onClick={props.onFetchData}>Fetch</Button>
                     <Button color='inherit' onClick={ctx.onLogout}>Logout</Button>
                 </Toolbar>
             </AppBar>
