@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import AuthContext from "./auth-context";
+import jwt_decode from "jwt-decode";
 
 function AuthProvider(props) {
     const navigate = useNavigate();
@@ -28,6 +29,10 @@ function AuthProvider(props) {
             console.log(data);
             localStorage.setItem('token', data.token);
             setToken(data.token);
+
+            var decodedToken = jwt_decode(data.token);
+            const remainingTime = decodedToken.exp * 1000 - (new Date().getTime());
+            setTimeout(logoutHandler, remainingTime);
             const origin = location.state?.from?.pathname || '/shop';
             navigate(origin);
           } else {
