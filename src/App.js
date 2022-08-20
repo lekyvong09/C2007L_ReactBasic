@@ -56,6 +56,7 @@ function App() {
   }
 
   useEffect(() => {
+    fetchDataHandler();
     if (localStorage.getItem('isLoggedInStatue') === '1') {
       setIsLoggedIn(true);
     }
@@ -63,15 +64,31 @@ function App() {
 
   const location = useLocation();
 
-  const loginHandler = (username, password) => {
-    console.log(`login with username: ${username} and password: ${password}`);
-    
-    if (username === 'admin' && password === 'password') {
-      setIsLoggedIn(true);
-      localStorage.setItem('isLoggedInStatue', '1');
-      const origin = location.state?.from?.pathname || '/shop';
-      navigate(origin);
-    } else {
+  const loginHandler = async (username, password) => {
+    try {
+      const response = await fetch('http://localhost:8080/api/user/login', {
+        method: 'POST',
+        body: JSON.stringify({
+          username: username,
+          password: password
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log(data);
+        localStorage.setItem('isLoggedInStatue', '1');
+        localStorage.setItem('token', data.token);
+        const origin = location.state?.from?.pathname || '/shop';
+        setIsLoggedIn(true);
+        navigate(origin);
+      } else {
+        throw new Error(data.message);
+      }
+    } catch (error) {
+      console.log(error);
       setIsLoggedIn(false);
     }
   }
@@ -82,14 +99,21 @@ function App() {
     navigate('/');
   }
 
-  const saveProductHandler = (data) => {
+  const saveProductHandler = async (data) => {
     const productData = {
-      ...data,
-      id: Math.random()
+      ...data
     };
-    setProduct(prevState => {
-      return [...prevState, productData];
+    const response = await fetch('http://localhost:8080/api/products/add', {
+      method: 'POST',
+      body: JSON.stringify(productData),
+      headers: {
+        'Content-Type': 'application/json'
+      }
     });
+    const returnData = await response.json();
+    console.log(returnData);
+
+    fetchDataHandler();
   }
 
   // const fetchDataHandler = () => {
@@ -114,7 +138,7 @@ function App() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch('http://localhost:8080/api/products/return404');
+      const response = await fetch('http://localhost:8080/api/products');
       const data = await response.json();
       const transformedProducts = data.products.map(product => {
         return {
@@ -133,6 +157,27 @@ function App() {
       console.log(error.message);
       setError(error.message);
       setIsLoading(false);
+    }
+  }
+
+  const addUserHandler = async (username, email) => {
+    const response = await fetch('http://localhost:8080/api/user/register', {
+      method: 'POST',
+      body: JSON.stringify({
+        email: email,
+        username: username
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      console.log(data); /// show successful data
+    } else {
+      console.log(data); /// show error
     }
   }
 
@@ -174,8 +219,8 @@ function App() {
           </ProtectedRoute>
         } />
 
-        <Route index element={<Login onLogin={loginHandler}/>} />
-        <Route path='login' element={<Login onLogin={loginHandler}/>} />
+        <Route index element={<Login onLogin={loginHandler} onAddUser={addUserHandler} />} />
+        <Route path='login' element={<Login onLogin={loginHandler} onAddUser={addUserHandler} />} />
 
       </Routes>
       </CartProvider>
