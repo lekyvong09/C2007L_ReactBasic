@@ -65,7 +65,7 @@ function Login (props) {
     const submitHandler = (event) => {
         event.preventDefault();
         if (!authContext.storeIsLoggedIn) {
-            props.onLogin(usernameState.value, passwordState.value);
+            authContext.login(usernameState.value, passwordState.value);
         } else {
             props.onAddUser(usernameState.value, passwordState.value);
         }

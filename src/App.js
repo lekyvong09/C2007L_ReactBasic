@@ -10,6 +10,7 @@ import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
 import ItemList from './Shop/ItemList';
 import CartProvider from './store/CartProvider';
+import AuthProvider from './store/AuthProvider';
 
 var initialProducts = [];
 
@@ -45,11 +46,10 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 function App() {
   const [products, setProduct] = useState(initialProducts);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
+
 
   const drawerOpenHandler = (isOpen) => {
     setIsDrawerOpen(isOpen);
@@ -57,47 +57,8 @@ function App() {
 
   useEffect(() => {
     fetchDataHandler();
-    if (localStorage.getItem('isLoggedInStatue') === '1') {
-      setIsLoggedIn(true);
-    }
   }, []);
 
-  const location = useLocation();
-
-  const loginHandler = async (username, password) => {
-    try {
-      const response = await fetch('http://localhost:8080/api/user/login', {
-        method: 'POST',
-        body: JSON.stringify({
-          username: username,
-          password: password
-        }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      const data = await response.json();
-      if (response.ok) {
-        console.log(data);
-        localStorage.setItem('isLoggedInStatue', '1');
-        localStorage.setItem('token', data.token);
-        const origin = location.state?.from?.pathname || '/shop';
-        setIsLoggedIn(true);
-        navigate(origin);
-      } else {
-        throw new Error(data.message);
-      }
-    } catch (error) {
-      console.log(error);
-      setIsLoggedIn(false);
-    }
-  }
-
-  const logoutHandler = () => {
-    localStorage.removeItem('isLoggedInStatue');
-    setIsLoggedIn(false);
-    navigate('/');
-  }
 
   const saveProductHandler = async (data) => {
     const productData = {
@@ -161,34 +122,36 @@ function App() {
   }
 
   const addUserHandler = async (username, email) => {
-    const response = await fetch('http://localhost:8080/api/user/register', {
-      method: 'POST',
-      body: JSON.stringify({
-        email: email,
-        username: username
-      }),
-      headers: {
-        'Content-Type': 'application/json'
+    try {
+      const response = await fetch('http://localhost:8080/api/user/register', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: email,
+          username: username
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        console.log(data); /// show successful data
+      } else {
+        console.log(data); /// show error
       }
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      console.log(data); /// show successful data
-    } else {
-      console.log(data); /// show error
+    } catch (error) {
+      console.log(error);
+      setError(error.message);
     }
+    
   }
 
   return (
-    <AuthContext.Provider value={{
-      storeIsLoggedIn: isLoggedIn,
-      onLogout: logoutHandler
-    }}>
+    <AuthProvider>
       <CartProvider>
       <Navigation 
-        onLogin={loginHandler} 
         onDrawerOpen={drawerOpenHandler} 
         isDrawerOpen={isDrawerOpen}
         onFetchData={fetchDataHandler}
@@ -219,12 +182,12 @@ function App() {
           </ProtectedRoute>
         } />
 
-        <Route index element={<Login onLogin={loginHandler} onAddUser={addUserHandler} />} />
-        <Route path='login' element={<Login onLogin={loginHandler} onAddUser={addUserHandler} />} />
+        <Route index element={<Login onAddUser={addUserHandler} />} />
+        <Route path='login' element={<Login onAddUser={addUserHandler} />} />
 
       </Routes>
       </CartProvider>
-    </AuthContext.Provider>
+    </AuthProvider>
     
   );
 }
