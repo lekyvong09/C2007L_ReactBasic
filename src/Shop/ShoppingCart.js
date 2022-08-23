@@ -10,14 +10,18 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import CartContext from '../store/cart-context';
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import IconButton from '@mui/material/IconButton';
 import IndeterminateCheckBoxOutlinedIcon from '@mui/icons-material/IndeterminateCheckBoxOutlined';
+import Checkout from './Checkout';
+import AuthContext from '../store/auth-context';
 
 
 function ShoppingCart(props) {
+  const authContext = useContext(AuthContext);
+  const [isCheckout, setIsCheckout] = useState(false);
   // const cartItems = [
   //   {id: 1, title: 'Superman: Action Comics Volume 5', unit: 12.99, imageUrl: "./BOOK-COMIC-1000.jpg", qty: 2},
   //   {id: 2, title: 'Batman: The Silver Age Omnibus', unit: 99.99, imageUrl: "./BOOK-COMIC-1001.jpg", qty: 1},
@@ -47,6 +51,46 @@ function ShoppingCart(props) {
 
   const minusHandler = (id) => {
     return () => cartContext.removeItem(id);
+  }
+
+  const checkoutHandler = async (info) => {
+    try {
+      const response = await fetch('http://localhost:8080/api/checkout', {
+        method: 'POST',
+        body: JSON.stringify({
+          ...info,
+          total: cartContext.totalAmount,
+          items: [...cartContext.items]
+        }), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + authContext.token
+        }
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log(data);
+        cartContext.reset();
+        setIsCheckout(false);
+        props.onCloseModal();
+      } else {
+        throw new Error(data.message);
+      }
+
+    } catch (error) {
+      console.log(error);
+      props.onCloseModal();
+    }
+
+    let submitData = {
+      ...info,
+      total: cartContext.totalAmount,
+      items: [...cartContext.items]
+    };
+    console.log(submitData);
+    setIsCheckout(false);
+    props.onCloseModal();
   }
 
     return (
@@ -105,10 +149,13 @@ function ShoppingCart(props) {
               </TableBody>
             </Table>
           </TableContainer>
+
+          {isCheckout && <Checkout onCheckout={checkoutHandler}/>}
+
         </DialogContent>
         <DialogActions>
           <Button onClick={props.onCloseModal}>Cancel</Button>
-          {cartContext.items.length !==0 && <Button onClick={props.onCloseModal}>Order</Button>}
+          {!isCheckout && cartContext.items.length !==0 && <Button onClick={() => {setIsCheckout(true)}}>Order</Button>}
         </DialogActions>
       </Dialog>
     );
